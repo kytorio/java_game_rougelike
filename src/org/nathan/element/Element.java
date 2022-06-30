@@ -23,6 +23,35 @@ public abstract class Element {
 
     public abstract void render(Graphics g);
 
+    /**
+     * @param status true -- press, false -- release
+     * @param code The code of the key
+     * */
+    public void onKey(boolean status, int code) {
+
+    }
+
+    protected void onMove() {
+
+    }
+
+    /**
+     * @设计模式 模板模式: 在模板模式中定义对象执行方法的先后顺序, 由子类选择性重写方法
+     * */
+    public final void onTick() {
+        onChangeIcon();
+        onMove();
+        onShoot();
+    }
+
+    protected void onShoot() {
+
+    }
+
+    protected void onChangeIcon() {
+
+    }
+
     // VO(视图对象) 必须 定义 Getters & Setters
     public int getX() {
         return x;

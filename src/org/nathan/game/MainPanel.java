@@ -9,23 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 
 // 元素显示 界面刷新（多线程）
-public class MainPanel extends JPanel {
+public class MainPanel extends JPanel implements Runnable {
     // 管理器
     private ElementManager manager;
 
     public MainPanel() {
         init();
-
-        // For Test
-        load();
-    }
-
-    public void load() {
-        ImageIcon icon = new ImageIcon("image/tank/play1/player1_down.png");
-        Element el1 = new Player(100, 100, 50, 50, icon);
-        Element el2 = new Player(100, 100, 100, 100, icon);
-        manager.addElements(ElementType.PLAYER, el1);
-        manager.addElements(ElementType.MAP, el2);
     }
 
     protected void init() {
@@ -36,6 +25,9 @@ public class MainPanel extends JPanel {
      * paint 进行绘画
      * 绘画有固定顺序
      * 因此有覆盖问题
+     *
+     * 只执行一次
+     * 实时刷新需要多线程
      * */
     @Override
     public void paint(Graphics g) {
@@ -48,5 +40,18 @@ public class MainPanel extends JPanel {
             }
         }
 
+    }
+
+    @Override
+    public void run() {
+        while (true)
+        {
+            repaint();
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
