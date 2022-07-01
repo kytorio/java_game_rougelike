@@ -12,13 +12,12 @@ import java.awt.*;
  *      3. 什么时候修改图片
  * */
 public class Player extends Element{
-    private boolean left = false;
-    private boolean right = false;
-    private boolean up = false;
-    private boolean down = false;
+    private int keyDown = 0;
 
     // 当前方向, 默认为up
-    private String direction = "up";
+    private Direction direction = Direction.UP;
+
+    private boolean shooting = false;
 
     // Image Collection
 
@@ -45,47 +44,35 @@ public class Player extends Element{
         if (status) {
             switch (code) {
                 case 37:  // left
-                    left = true;
-                    right = false;
-                    up = false;
-                    down = false;
-                    direction = "left";
+                    keyDown++;
+                    direction = Direction.LEFT;
                     break;
                 case 38:  // up
-                    up = true;
-                    down = false;
-                    left = false;
-                    right = false;
-                    direction = "up";
+                    keyDown++;
+                    direction = Direction.UP;
                     break;
                 case 39:  // right
-                    right = true;
-                    left = false;
-                    up = false;
-                    down = false;
-                    direction = "right";
+                    keyDown++;
+                    direction = Direction.RIGHT;
                     break;
                 case 40:  // down
-                    down = true;
-                    up = false;
-                    left = false;
-                    right = false;
-                    direction = "down";
+                    keyDown++;
+                    direction = Direction.DOWN;
+                    break;
+                case 32:
+                    shooting = true;
                     break;
             }
         } else {
             switch (code) {
                 case 37:  // left
-                    left = false;
-                    break;
                 case 38:  // up
-                    up = false;
-                    break;
                 case 39:  // right
-                    right = false;
-                    break;
                 case 40:  // down
-                    down = false;
+                    keyDown--;
+                    break;
+                case 32:
+                    shooting = false;
                     break;
             }
         }
@@ -94,23 +81,30 @@ public class Player extends Element{
     @Override
     protected void onChangeIcon() {
         super.onChangeIcon();
-        setIcon(Loader.images.get(direction));
+        setIcon(Loader.players.get(direction));
     }
 
     @Override
     public void onMove() {
         super.onMove();
-        if (left) {
-            setX(Math.max(getX() - 10, 0));
+
+        if (keyDown == 0) {
+            return;
         }
-        if (right) {
-            setX(Math.min(getX() + 10, 900 - getW()));
-        }
-        if (up) {
-            setY(Math.max(getY() - 10, 0));
-        }
-        if (down) {
-            setY(Math.min(getY() + 10, 600 - getH()));
+
+        switch (direction) {
+            case RIGHT:
+                setX(Math.min(getX() + 10, 900 - getW()));
+                break;
+            case LEFT:
+                setX(Math.max(getX() - 10, 0));
+                break;
+            case DOWN:
+                setY(Math.min(getY() + 10, 600 - getH()));
+                break;
+            case UP:
+                setY(Math.max(getY() - 10, 0));
+                break;
         }
     }
 
