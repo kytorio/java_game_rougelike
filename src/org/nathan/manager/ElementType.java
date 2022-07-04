@@ -4,6 +4,8 @@ public enum ElementType {
     MAP,
     PLAYER,
     ENEMY,
-    BOSS
+    BOSS,
+    BULLET,
+    DYING
 }
 // 道具，子弹，...
