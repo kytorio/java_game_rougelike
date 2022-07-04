@@ -6,6 +6,7 @@ import org.nathan.element.Enemy;
 import org.nathan.element.Player;
 import org.nathan.manager.ElementManager;
 import org.nathan.manager.ElementType;
+import org.nathan.manager.Loader;
 
 import javax.swing.*;
 import java.util.List;
@@ -26,9 +27,9 @@ public class MainThread extends Thread{
         Element el1 = new Player(100, 100, 50, 50, icon);
         manager.addElements(ElementType.PLAYER, el1);
 
-        for (int i = 0; i < 10; i++) {
-            manager.addElements(ElementType.ENEMY, new Enemy().build(""));
-        }
+        Loader.mapLoad(1).forEach(el -> manager.addElements(ElementType.MAP, el));
+
+
     }
 
     @Override

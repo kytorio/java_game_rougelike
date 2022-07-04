@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GameMap extends Element{
-    private enum Type {
+    public enum Type {
         BASE, BRICK, GRASS, IRON, RIVER
     }
 
