@@ -43,6 +43,16 @@ public class ElementManager {
         return elements.get(type);
     }
 
+    public void clearElement(ElementType type) {
+        elements.get(type).clear();
+    }
+
+    public void clearAll() {
+        for (ElementType type : ElementType.values()) {
+            clearElement(type);
+        }
+    }
+
     protected void init() {
         elements = new HashMap<>();
         for (ElementType type : ElementType.values()) {

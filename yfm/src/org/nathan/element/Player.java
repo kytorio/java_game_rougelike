@@ -4,7 +4,6 @@ import org.nathan.manager.ElementManager;
 import org.nathan.manager.ElementType;
 import org.nathan.manager.Loader;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -20,12 +19,24 @@ public class Player extends Element{
     // 当前方向, 默认为up
     private Direction direction = Direction.UP;
 
+    private final int speed = 10;
+
     private boolean shooting = false;
 
     // Image Collection
 
-    public Player(int x, int y, int w, int h, ImageIcon icon) {
-        super(x, y, w, h, icon);
+    public Player() {
+        setIcon(Loader.players.get(direction));
+    }
+
+    @Override
+    public Element build(String data) {
+        String[] coordinate = data.split(",");
+        setX(Integer.parseInt(coordinate[0]));
+        setY(Integer.parseInt(coordinate[1]));
+        setH(50);
+        setW(50);
+        return this;
     }
 
     @Override
@@ -111,16 +122,15 @@ public class Player extends Element{
             return;
         }
 
-        int speed = 10;
         switch (direction) {
             case RIGHT:
-                setX(Math.min(getX() + speed, 900 - getW()));
+                setX(Math.min(getX() + speed, 1350 - getW()));
                 break;
             case LEFT:
                 setX(Math.max(getX() - speed, 0));
                 break;
             case DOWN:
-                setY(Math.min(getY() + speed, 600 - getH()));
+                setY(Math.min(getY() + speed, 900 - getH()));
                 break;
             case UP:
                 setY(Math.max(getY() - speed, 0));
@@ -144,5 +154,24 @@ public class Player extends Element{
         }
 
         return String.format("x: %d, y: %d, direction: %s", x, y, direction);
+    }
+
+    @Override
+    public void rollback() {
+        super.rollback();
+        switch (direction) {
+            case RIGHT:
+                setX(Math.min(getX() - speed, 1350 - getW()));
+                break;
+            case LEFT:
+                setX(Math.max(getX() + speed, 0));
+                break;
+            case DOWN:
+                setY(Math.min(getY() - speed, 900 - getH()));
+                break;
+            case UP:
+                setY(Math.max(getY() + speed, 0));
+                break;
+        }
     }
 }

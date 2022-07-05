@@ -127,4 +127,8 @@ public abstract class Element {
     public void setAlive(boolean alive) {
         this.alive = alive;
     }
+
+    public void rollback() {
+
+    }
 }

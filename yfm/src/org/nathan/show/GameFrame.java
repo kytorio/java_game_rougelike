@@ -14,8 +14,8 @@ import java.awt.event.MouseMotionListener;
  *     4. 显示窗体
 * */
 public class GameFrame extends JFrame {
-    private static final int w = 900;
-    private static final int h = 600;
+    private static final int w = 1350;
+    private static final int h = 900;
     private JPanel panel;
     private KeyListener keyListener;
     private MouseMotionListener mouseMotionListener;

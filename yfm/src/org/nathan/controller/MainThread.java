@@ -2,14 +2,14 @@ package org.nathan.controller;
 
 import org.nathan.element.Bullet;
 import org.nathan.element.Element;
-import org.nathan.element.Enemy;
-import org.nathan.element.Player;
+import org.nathan.element.MapItem;
+import org.nathan.element.Point;
 import org.nathan.manager.ElementManager;
 import org.nathan.manager.ElementType;
 import org.nathan.manager.Loader;
 
-import javax.swing.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @说明 游戏主线程，控制加载、关卡、运行时自动化、地图切换资源释放和重新读取
@@ -18,18 +18,17 @@ import java.util.List;
 public class MainThread extends Thread{
     private final ElementManager manager;
 
+    private int level = 1;
+    private int point = 0;
+
     public MainThread() {
         this.manager = ElementManager.getInstance();
     }
 
     public void load() {
-        ImageIcon icon = new ImageIcon("image/tank/play1/player1_down.png");
-        Element el1 = new Player(100, 100, 50, 50, icon);
-        manager.addElements(ElementType.PLAYER, el1);
+        Loader.mapLoad(level).forEach(el -> manager.addElements(ElementType.MAP, el));
 
-        Loader.mapLoad(1).forEach(el -> manager.addElements(ElementType.MAP, el));
-
-
+        Loader.loadLevel(level, manager);
     }
 
     @Override
@@ -41,6 +40,10 @@ public class MainThread extends Thread{
             gameRuntime();
             // Level End (Release Resources)
             switchLevel();
+
+            if (level > 2) {
+                System.exit(0);
+            }
 
             try {
                 Thread.sleep(50);
@@ -66,6 +69,9 @@ public class MainThread extends Thread{
             elementsUpdate();
             collideDetect();
             time++;  // Unique Time Control
+            if (manager.getElementByType(ElementType.ENEMY).isEmpty()) {
+                break;
+            }
             try {
                 sleep(50);
             } catch (InterruptedException e) {
@@ -92,12 +98,15 @@ public class MainThread extends Thread{
     private void collideDetect() {
         List<Element> enemies = manager.getElementByType(ElementType.ENEMY);
         List<Element> bullets = manager.getElementByType(ElementType.BULLET);
+        List<Element> mapItem = manager.getElementByType(ElementType.MAP);
+        Element player = manager.getElementByType(ElementType.PLAYER).get(0);
 
         for (Element enemy : enemies) {
             for (Element bullet : bullets) {
                 if (enemy.collide(bullet)) {
                     if (bullet instanceof Bullet) {
-                        enemy.onShot(((Bullet) bullet).getAttack());
+                        enemy.setAlive(false);
+                        point += 10;
                     } else {
                         enemy.setAlive(false);
                     }
@@ -106,9 +115,39 @@ public class MainThread extends Thread{
                 }
             }
         }
+        List<MapItem> items =  mapItem.stream()
+                .filter(e -> e instanceof MapItem)
+                .map(e -> (MapItem) e)
+                .filter(e -> e.getType() == MapItem.Type.BRICK || e.getType() == MapItem.Type.IRON)
+                .collect(Collectors.toList());
+
+        for (MapItem item : items) {
+            if (item.collide(player)) {
+                player.rollback();
+            }
+            for (Element enemy : enemies) {
+                if (item.collide(enemy)) {
+                    enemy.rollback();
+                }
+            }
+            for (Element bullet : bullets) {
+                if (item.collide(bullet)) {
+                    bullet.setAlive(false);
+                }
+            }
+        }
     }
 
     private void switchLevel() {
-
+        manager.clearAll();
+        level++;
+        Point point1 = new Point(point);
+        manager.addElements(ElementType.DYING, point1);
+        try {
+            sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        manager.clearElement(ElementType.DYING);
     }
 }

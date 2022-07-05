@@ -4,8 +4,6 @@ import org.nathan.manager.Loader;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class MapItem extends Element {
     public enum Type {
@@ -20,17 +18,21 @@ public class MapItem extends Element {
     public MapItem() {
     }
 
-    Type type;
+    private Type type;
+
+    public Type getType() {
+        return type;
+    }
 
     // type,x,y
     @Override
     public Element build(String data) {
         String[] components = data.split(",");
         type = Type.valueOf(components[0]);
-        setX(Integer.parseInt(components[1]));
-        setY(Integer.parseInt(components[2]));
-        setW(20);
-        setH(20);
+        setX((int) (Integer.parseInt(components[1]) * 1.5));
+        setY((int) (Integer.parseInt(components[2]) * 1.5));
+        setW(30);
+        setH(30);
         return this;
     }
 }

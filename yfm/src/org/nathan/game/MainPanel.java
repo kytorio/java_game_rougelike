@@ -1,7 +1,6 @@
 package org.nathan.game;
 
 import org.nathan.element.Element;
-import org.nathan.element.Player;
 import org.nathan.manager.ElementManager;
 import org.nathan.manager.ElementType;
 

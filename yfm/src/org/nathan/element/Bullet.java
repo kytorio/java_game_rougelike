@@ -36,7 +36,7 @@ public class Bullet extends Element{
     public Bullet() {}
 
     public boolean inside() {
-        return getX() >= 0 && getX() <= 500 && getY() >= 0 && getY() <= 600;
+        return getX() >= 0 && getX() <= 1350 && getY() >= 0 && getY() <= 900;
     }
 
     @Override
